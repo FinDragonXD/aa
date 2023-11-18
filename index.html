@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<button onclick="toggleDarkMode()" class="btn btn-success">Cambiar color</button>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual de Usuario</title>
+    <!-- Aquí puedes agregar estilos CSS si los necesitas -->
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Metodos Numericos    
+    </title>
+    <script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.css" integrity="sha384-OH8qNTHoMMVNVcKdKewlipV4SErXqccxxlg6HC9Cwjr5oZu2AdBej1TndeCirael" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.js" integrity="sha384-ImWHyYvDPlRzwFnvLhG9Jcpm/7qL4SVIuJK0C6Rj+Mf7fpeNJCLCynC+EVz4kCSA" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        input[type=text], input[type=number] {
+            width: 100px;
+        }
+
+        /* Estilos para el modo claro */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Estilos para el modo oscuro */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+    </style>
+    <!-- Math.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@12.0.0/lib/browser/math.min.js"></script>
+
+    <style>
+        .center-align {
+            text-align: center;
+        }
+        .center-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table, th, td{
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td{
+            padding: 10px;
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        input[type=text], input[type=number] {
+            width: 100px;
+        }
+    </style>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- KaTeX -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.0/math.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css">
+</head>
+<body>
+    <h1 class="center-align">Método de la secante</h1><br>
+    <div class="center-form container">
+        <section class="row p-2">
+            <section class="col-3 flex-column justify-content-center text-center">
+                <h4 class="center-align">Ingrese la funcion</h4>
+                <input id="funcion" type="text" placeholder="Funcion F(x)" oninput="update()" style="width: 100%;"><br>
+                <div id="funcionSecante"></div>
+            </section>
+            <section class="col-3 flex-column justify-content-center">
+                <h5 class="center-align">Ingrese el primer valor inicial</h5>
+                <input type="number" placeholder="Valor X0" id="x0" style="width: 100%;"><br>
+            </section>
+            <section class="col-3 flex-column justify-content-center">
+                <h5 class="center-align">Ingrese el segundo valor inicial</h5>
+                <input type="number" placeholder="Valor X1" id="x1" style="width: 100%;"><br>
+            </section>
+            <section class="col-3 flex-column justify-content-center">
+                <h4 class="center-align">Ingrese el error</h4>
+                <input type="number" placeholder="Error Ea" id="error" style="width: 100%;"><br><br>
+            </section>
+        </section><br>
+        <button onclick="calcular()">Calcular</button><br>
+        <button id="resetButton">Reiniciar</button>
+        <script>
+            document.getElementById('resetButton').addEventListener('click', function() {
+                location.reload();
+            });
+        </script>
+        <section><h3><p id="resultado"></p></h3></section>
+        <script src="calculos.js"></script><br>
+        <h4 class="center-align">Tabla solucion</h4>
+        <table id="tablaResultados">
+            <thead>
+                <tr>
+                    <th>Iteración</th>
+                    <th>x0</th>
+                    <th>x1</th>
+                    <th>xi</th>
+                    <th>Error Aproximado (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se llenarán los datos dinámicamente -->
+            </tbody>
+        </table><br>
+        <p id="formula"></p>
+        <div id="grafica"></div>
+        <script>
+            const formula = document.getElementById("formula");
+
+            function update(){
+                const funcion = document.getElementById("funcion").value;
+                console.log(funcion)
+                const inputKatex = document.getElementById("funcionSecante");
+                const fparseado = math.parse(funcion).toTex();
+            
+                katex.render("f(x) = " + fparseado.toString(), inputKatex, {
+                        throwOnError: true
+                    });
+            
+                functionPlot({
+                target: '#grafica',
+                    data: [{
+                        fn: funcion
+                    }]
+                })
+            }
+        </script><br>
+        
+        <h1 class="mb-4">Método de Simpson</h1><br>
+        <div class="form-group">
+            <h4>Función:</h4><input type="text" id="userFunction" class="form-control" value=""placeholder="Funcion F(x)"style="width: 100%;"><br>
+        </div>
+        <div class="form-group">
+            Límite inferior (a):<input type="number" id="a" class="form-control"value=""placeholder="∫_n"style="width: 100%;"><br>
+        </div>
+        <div class="form-group">
+            Límite superior (b):<input type="number" id="b" class="form-control"value=""placeholder="∫^n"style="width: 100%;"><br>
+        </div>
+        <div class="form-group d-flex justify-content-center flex-column text-center" >
+            Número de intervalos (n):<input type="number" id="n" class="form-control"value=""placeholder="Numero de Intervalos" style="width: 100%;"><br>
+        </div>
+        <div class="form-group">
+            <h4>Método:</h4> <br>
+            <select id="method" class="form-control">
+                <option value="13">Simpson 1/3</option>
+                <option value="38">Simpson 3/8</option>
+            </select><br>
+        
+        <!-- Botones para calcular -->
+        <button onclick="calculateH()" class="btn btn-secondary">Valor de H</button>
+        <button onclick="showFormulaSteps()" class="btn btn-secondary">Limites de la integral</button>
+        <button onclick="calculate()" class="btn btn-primary">mostrar funcion y calcular</button>
+        
+        <!-- Botones para gráfica y error -->
+        <button onclick="generateChart()" class="btn btn-success">Generar Gráfica</button>
+        <button onclick="calculateError()" class="btn btn-primary">Calcular Error</button>
+        <button onclick="refreshPage()" class="btn btn-info">Refrescar Página</button>
+    <div id="functionDisplay" style="border: 1px solid black; padding: 10px; margin-top: 10px;"></div>
+    <div id="formula"></div>
+    <div id="steps" style="display: none;"></div>
+    <div id="error" style="margin-top: 10px;"></div>
+    <div id="formula38"></div>
+    <div id="formula13"></div>
+    <div id="error13"></div>
+    <div id="error38"></div>
+    <div class="mt-5">
+        <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+        <!-- Bootstrap JS y Popper.js -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+
+    var myChart;
+            // Definir la función a integrar
+            function f(x) {
+                var userFunction = document.getElementById('userFunction').value;
+                var scope = {x: x};
+                return math.evaluate(userFunction, scope);
+            }
+    
+            // Método de Simpson 1/3
+function simpson13(a, b, n) {
+    var h = (b - a) / n;
+    var sum = 0;
+    var steps = '';
+    for (var i = 0; i <= n; i++) {
+        var x = a + h * i;
+        var term;
+        if (i == 0 || i == n) {
+            term = f(x);
+            steps += 'f(' + x + ') = ' + term + '<br>';
+        } else if (i % 2 == 0) {
+            term = 2 * f(x);
+            steps += '2 * f(' + x + ') = ' + term + '<br>';
+        } else {
+            term = 4 * f(x);
+            steps += '4 * f(' + x + ') = ' + term + '<br>';
+        }
+        sum += term;
+    }
+    var result = h / 3 * sum;
+    steps += 'Resultado: ' + result;
+    return {result: result, steps: steps};
+}
+
+        // Método de Simpson 3/8
+function simpson38(a, b, n) {
+    var h = (b - a) / n;
+    var sum = 0;
+    var steps = '';
+    for (var i = 0; i <= n; i++) {
+        var x = a + h * i;
+        var term;
+        if (i == 0 || i == n) {
+            term = f(x);
+            steps += 'f(' + x + ') = ' + term + '<br>';
+        } else if (i % 3 == 0) {
+            term = 2 * f(x);
+            steps += '2 * f(' + x + ') = ' + term + '<br>';
+        } else {
+            term = 3 * f(x);
+            steps += '3 * f(' + x + ') = ' + term + '<br>';
+        }
+        sum += term;
+    }
+    var result = 3 * h / 8 * sum;
+    steps += 'Resultado: ' + result;
+    return {result: result, steps: steps};
+}
+
+// Función para calcular los resultados y mostrarlos
+function calculate() {
+            var a = parseFloat(document.getElementById('a').value);
+            var b = parseFloat(document.getElementById('b').value);
+            var n = parseInt(document.getElementById('n').value);
+            var method = document.getElementById('method').value;
+            var userFunction = document.getElementById('userFunction').value;
+            var functionDisplay = katex.renderToString("Función: " + userFunction);
+            document.getElementById('functionDisplay').innerHTML = functionDisplay;
+            var result;
+            var steps;
+    if (method == '13') {
+        var output = simpson13(a, b, n);
+        result = output.result;
+        steps = output.steps;
+    } else {
+        var output = simpson38(a, b, n);
+        result = output.result;
+        steps = output.steps;
+    }
+    var formula = katex.renderToString("Resultado: " + result);
+    document.getElementById('formula').innerHTML = formula;
+    document.getElementById('steps').innerHTML = steps;
+    
+}
+    
+function calculateError() {
+    var a = parseFloat(document.getElementById('a').value);
+    var b = parseFloat(document.getElementById('b').value);
+    var n = parseInt(document.getElementById('n').value);
+
+    var h = (b - a) / n;
+
+    // Supongamos un valor específico para la cuarta derivada
+    var fourthDerivative = 10; // Aquí debes proporcionar el valor real de la cuarta derivada
+
+    // Calcular el error para el Método de Simpson 1/3 y 3/8
+    var error13 = -((b - a) * Math.pow(h, 4) / 180) * fourthDerivative;
+    var error38 = -((b - a) * Math.pow(h, 5) / 6480) * fourthDerivative;
+
+    // Mostrar el error calculado en la página
+    document.getElementById('error13').innerText = error13.toFixed(6);
+    document.getElementById('error38').innerText = error38.toFixed(6);
+    document.getElementById('error13').innerText = "El error en el Método de Simpson 1/3 es: " + error13.toFixed(6);
+document.getElementById('error38').innerText = "El error en el Método de Simpson 3/8 es: " + error38.toFixed(6);
+
+}
+    
+    function showSteps() {
+                var stepsDiv = document.getElementById('steps');
+                if (stepsDiv.style.display === "none") {
+                    stepsDiv.style.display = "block";
+                } else {
+                    stepsDiv.style.display = "none";
+                }
+            }
+            
+            // Función para generar la gráfica
+            function generateChart() {
+                var a = parseFloat(document.getElementById('a').value);
+                var b = parseFloat(document.getElementById('b').value);
+                var n = parseInt(document.getElementById('n').value);
+                var selectedMethod = document.getElementById('method').value;
+                var userFunction = document.getElementById('userFunction').value;
+    
+                var data = [];
+                var labels = [];
+    
+                for (var i = a; i <= b; i += 0.1) {
+                    labels.push(i.toFixed(1));
+    
+                    var result;
+    
+    
+    // Función para dibujar gráfico
+    function drawChart(data, labels) {
+        var ctx = document.getElementById('myChart').getContext('2d');
+    
+        
+        if (myChart) {
+            myChart.destroy();
+        }
+    
+        // Crea un nuevo gráfico
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Método de Simpson',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } if (selectedMethod === '13') {
+                        result = simpson13(i, b, n).result;
+                    } else {
+                        result = simpson38(i, b, n).result;
+                    }
+    
+                    data.push(result);
+                }
+    
+                drawChart(data, labels);
+            }
+            function generateChartAndError() {
+        generateChart();
+        calculateError();
+    
+    }
+    // Función para refrescar la página
+    function refreshPage() {
+        location.reload(true);
+    }
+    
+    function showSimpson13Steps() {
+                var a = parseFloat(document.getElementById('a').value);
+                var b = parseFloat(document.getElementById('b').value);
+                var n = parseInt(document.getElementById('n').value);
+                var h = (b - a) / n;
+    
+                var stepsDiv = document.getElementById('steps');
+                stepsDiv.style.display = 'block';
+                stepsDiv.innerHTML = '';
+    
+                for (var i = 0; i <= n; i++) {
+                    var x_i = a + i * h;
+                    stepsDiv.innerHTML += 'Paso ' + i + ': x_' + i + ' = ' + a + ' + ' + i + ' * ' + h + ' = ' + x_i + '<br>';
+                }
+            }
+    
+            function showSimpson38Steps() {
+                var a = parseFloat(document.getElementById('a').value);
+                var b = parseFloat(document.getElementById('b').value);
+                var n = parseInt(document.getElementById('n').value);
+                var h = (b - a) / n;
+    
+                var stepsDiv = document.getElementById('steps');
+                stepsDiv.style.display = 'block';
+                stepsDiv.innerHTML = '';
+    
+                for (var i = 0; i <= n; i++) {
+                    var x_i = a + i * h;
+                    stepsDiv.innerHTML += 'Paso ' + i + ': x_' + i + ' = ' + a + ' + ' + i + ' * ' + h + ' = ' + x_i + '<br>';
+                }
+            }
+    
+            function showFormulaSteps() {
+                var a = parseFloat(document.getElementById('a').value);
+                var b = parseFloat(document.getElementById('b').value);
+                var n = parseInt(document.getElementById('n').value);
+                var h = (b - a) / n;
+    
+                var stepsDiv = document.getElementById('steps');
+                stepsDiv.style.display = 'block';
+                stepsDiv.innerHTML = '';
+    
+                for (var i = 0; i <= n; i++) {
+                    var x_i = a + i * h;
+                    stepsDiv.innerHTML += 'Paso ' + i + ': x_' + i + ' = ' + a + ' + ' + i + ' * ' + h + ' = ' + x_i + '<br>';
+                }
+            }
+            function calculateH() {
+            var a = parseFloat(document.getElementById('a').value);
+            var b = parseFloat(document.getElementById('b').value);
+            var n = parseInt(document.getElementById('n').value);
+    
+            var h = (b - a) / n;
+    
+            var stepsDiv = document.getElementById('steps');
+            stepsDiv.style.display = 'block';
+            stepsDiv.innerHTML = 'Calcular h en el método de Simpson 1/3 y 3/8:<br>';
+            stepsDiv.innerHTML += 'h = (b - a) / n<br>';
+            stepsDiv.innerHTML += 'h = (' + b + ' - ' + a + ') / ' + n + '<br>';
+            stepsDiv.innerHTML += 'h = ' + h + '<br>';
+        } function calculateH() {
+            var a = parseFloat(document.getElementById('a').value);
+            var b = parseFloat(document.getElementById('b').value);
+            var n = parseInt(document.getElementById('n').value);
+    
+            var h = (b - a) / n;
+    
+            var stepsDiv = document.getElementById('steps');
+            stepsDiv.style.display = 'block';
+            stepsDiv.innerHTML = 'Calcular h en el método de Simpson 1/3 y 3/8:<br>';
+            stepsDiv.innerHTML += 'h = (b - a) / n<br>';
+            stepsDiv.innerHTML += 'h = (' + b + ' - ' + a + ') / ' + n + '<br>';
+            stepsDiv.innerHTML += 'h = ' + h + '<br>';
+        }
+        function toggleDarkMode() {
+    var body = document.body;
+
+    // Alternar clases para cambiar entre el modo claro y oscuro
+    body.classList.toggle('light-mode');
+    body.classList.toggle('dark-mode');
+}
+function toggleDarkMode() {
+    var body = document.body;
+
+    // Alternar clases para cambiar entre el modo claro y oscuro
+    body.classList.toggle('light-mode');
+    body.classList.toggle('dark-mode');
+
+    // Almacenar la preferencia del usuario
+    var isDarkMode = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode);
+}
+
+// Verificar la preferencia almacenada al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    var isDarkMode = localStorage.getItem('darkMode') === 'true';
+    var body = document.body;
+
+    // Aplicar la clase correspondiente según la preferencia almacenada
+    body.classList.toggle('dark-mode', isDarkMode);
+    body.classList.toggle('light-mode', !isDarkMode);
+});
+
+function toggleManual() {
+        var manual = document.getElementById('manualUsuario');
+        if (manual.style.display === 'none') {
+            manual.style.display = 'block';
+        } else {
+            manual.style.display = 'none';
+        }
+    }
+    </script>
+        </script>
+        <!-- Gráfico -->
+        <div class="mt-5">
+            <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+    
+</div></body>
+<div><button onclick="toggleManual()" class="btn btn-info">Mostrar Manual de Usuario</button></div>
+<div id="manualUsuario" style="display: none;">
+    <h2>Manual de Usuario</h2>
+    <!-- Contenido del manual -->
+          <h3>Manual del Metodo Secante</h3>
+    <p>En este manual se hallan detalladas las funciones de la parte del Metodo de la Secante para que ustedes como usuarios puedan comprender alguna caracteristica de la cual no lleguen a entender.</p>
+<p>Debajo del titulo del metodo estan los cuatro 4 parametros (datos) del ejercicio que quieren o necesitan resolver, a la izquierda donde dice "Ingrese la funcion" usted ingresara la funcion que le probee el problema, si no sabes que es una funcion valla pues normalmente los libros las disponen de esta forma "f(x)=Funcion". Bien una vez ingresada la funcion al lado derecho donde dice "Ingrese el primer valor inicial" se ingresa el primer valor que da el ejercicio, normalmente lo disponen como "x0", depues sigue la opcion "Ingrese el segundo valor inicial" que se dispone como "x1", si no entiendes por que se ingresan es por que el metodo numerico de la secante es por medio de puntos de aproximacion osea los numeros que ingreste. Por ultimo donde dice "Ingrese el error" ingresaras el valor dado por el erjercicio que normalmente lo dan como "Ea" o "Es", con estos valores ya ingresados ya puedes proceder a calcular la raiz del ejercicio, valor solucion pedido por estos ejercicios, para ello da click en el boton calcular y debajo del boton reiniciar que es para reinicar todos los procesos de la pagina, te dara la raiz del ejercicio.</p>
+<p>Debajo de estos dos botones se encunetra la "Tabla solucion" que es la que dispone todos los datos calculados por el metodo, la tabla bota los siguientes datos: Iteraciones, valor x0, valor x1, valor xi (el valor xi es el valor raiz que se calcula en este metodo) y Error Aproximado "Ea o Es"; finalmente debajo de la tabla llace la grafica de la funcion que incialmente ingresaste para que puedas ver detalladamente el su comportamiento respecto a la funcion ingresada. </p>
+<p>Eso es todo, Gracias por leer nuestro manual. A continuacion el manual del metodo Simpson</p>
+          <h4>Manual del metodo de Simpson</h4>
+<p>En este manual al igual que el anterior se hallan detalladas las funciones de la parte del Metodo de Simpson para que ustedes como usuarios puedan comprender alguna caracteristica de la cual no lleguen a entender.
+</p>
+<p>Debajo del tirulo incialmente encuentran los primeros cuatro 4 parametros a ingresar para calcular el metodo, donde dice "Funcion" al igual que en la secante, se agrega la funcion dada por el ejrcicio, debajo se encunetra "limite inferior" y es que para este metodo se dispone una integral limitada dada por el ejercicio, en este caso ingresas el numero que aparece debajo del simbolo de la integral, debajo se encuantra "limite superior" donde se ingresa el valor superior del simbolo de la integral, debajo se encuentra "Numero de intervalos" donde ingresaras la cantidad que intervalos deseas calcular debajo esta "Metodo" donde se encuentra un espacio de seleccion apareciendo la primera opcion que es "Simpson 1/3" donde si das click seleccionas la otra ley de Simpson "Simpson 3/8" debajo hay multiples botones, te los explico consisamente.</p>
+<p>Para miramos el valor de H para eso presiona el boton de "valor de H" lo siguiente es poder conoces los limites el cual tu podras conseguir presionando el boton "Limites de la integral"ya podemos calcular nuestros limites con unos de los 2 metodos el de simpson 1/3 y 3/8 para eso presionamos el boton "Mostrar funcion y calcular" para generar la grafica das click en "Generar Grafica", para calcular el error das click en "Calcular Error" y para refrescar la pagina al igual que el reinicio del metodo secante das click en "Refrescar Pagina". Abajo de estos botones en ese rectangulo (escpacio) se visualizara el resultado depeniendo de la solicitud que hiciste dando click en los diversos botones</p>
+<p>Eso es todo, nuevamente Gracias por leer nuestro manual.</p>
+
+
+
+
+
+
+
+
+    <section>
+        <!-- Detalles sobre el uso de la herramienta -->
+    </section>
+    <!-- Más secciones con instrucciones -->
+</div>
+</html>
